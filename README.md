@@ -15,7 +15,7 @@ CabPlay 可以把导航、仪表和媒体界面放进《欧洲卡车模拟 2》�
 
 **新用户可以直接安装官方 CabPlay 1.22.1。** 1.22.0 安装包在全新安装时只用来提取游戏内兼容 DLL，下载后放着即可。桌面端全程使用 1.22.1。
 
-1. **安装官方 1.22.1。** 在 CrossOver 的 `Steam` 容器中安装 **欧卡 2 1.62.3.3s** 和官方 **CabPlay 1.22.1**。退出游戏和 CabPlay，外置游戏盘保持连接。Mac 需要 Python 3.9+、Git、`ffmpeg` 和 `ffprobe`。已有 Homebrew 的话，运行 `brew install ffmpeg` 即可补齐音乐工具。
+1. **准备游戏和 CabPlay。** 在 CrossOver 中用同一个容器运行 Steam 和官方 **CabPlay 1.22.1**，并确认游戏版本为 **欧卡 2 1.62.3.3s**。安装器当前读取名为 `Steam` 的容器。Mac 需要 Python 3.9+、Git、`ffmpeg` 和 `ffprobe`。已有 Homebrew 的用户可用 `brew install ffmpeg` 安装音乐工具。运行补丁前，先退出游戏和 CabPlay。
 2. **下载兼容 DLL 的来源包。** 把官方 **1.22.0** 安装包 `CabPlay-Setup-1.22.0.exe` 放进 Mac 的「下载」文件夹，保持文件名原样，无需双击运行。如果游戏目录里已经有脚本可识别的兼容 DLL，可以跳过这一步。[官方 CabPlay 发布页](https://github.com/Ku3rb1s/CabPlay/releases)
 3. **复制到 Mac 终端执行。**
 
@@ -27,7 +27,15 @@ CabPlay 可以把导航、仪表和媒体界面放进《欧洲卡车模拟 2》�
 
 看到「已安装 CabPlay 全功能补丁」后，在 CrossOver 的 Steam 容器选 **D3DMetal**，用 **DirectX 11** 启动欧卡 2。进入驾驶室后，中控和 Ultra 应随车辆移动刷新。
 
-脚本会在写入前校验版本并备份程序、插件和配置。如果想先检查环境，运行 `python3 install.py --check`。如果脚本找不到游戏，在命令末尾加 `--game-dir `，再把游戏安装文件夹拖进终端。如果旧版安装包放在别处，可以用 `--legacy-installer` 指定该文件。
+### 安装目录与检查
+
+安装器会尝试从 Steam 游戏库定位欧卡 2。游戏可以放在默认库或自定义库。找不到游戏时，手动指定安装目录：
+
+```bash
+python3 install.py --game-dir "/你的 Steam 游戏库/steamapps/common/Euro Truck Simulator 2"
+```
+
+如果旧版安装包放在其他目录，可以用 `--legacy-installer` 指定文件。运行 `python3 install.py --check` 可以先校验安装环境。正式安装会备份程序、插件和配置。
 
 ### 手头只有 1.22.1 安装包怎么办？
 
