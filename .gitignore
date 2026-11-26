@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.pyz
+*.ipa
+*.asar
+*.dll
+*.exe
+*.bak
+/work/v122/
+/work/v1221/full/
+/work/v1221/inspect/
+/work/v1221/merged/
