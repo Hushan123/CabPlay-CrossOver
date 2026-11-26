@@ -1,0 +1,217 @@
+{
+  "main.js": {
+    "sha256": "8d2e6b7b9d854ef8c80fc2ffca0d9179ffa085280f75552982990fdcf9a50362",
+    "edits": [
+      [
+        661,
+        661,
+        "  if (!gameWin || gameWin.isDestroyed()) return;\n  const remoteFps = Date.now() - (remote.lastWired || 0) < 3000 ? 60 : 30;\n  const wantedFps = remote.active ? Math.max(remoteFps, screen.fps) : screen.fps;\n  if (gameWin.webContents.getFrameRate() !== wantedFps) gameWin.webContents.setFrameRate(wantedFps);\n"
+      ],
+      [
+        672,
+        673,
+        "}, 16);\n"
+      ],
+      [
+        899,
+        900,
+        "protocol.registerSchemesAsPrivileged([{ scheme: 'cpdata', privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true } }, { scheme: 'cabmusic', privileges: { standard: true, secure: true, stream: true } }]);\n"
+      ],
+      [
+        911,
+        911,
+        "  require('./main/local-music').install(protocol, app.getPath('documents'));\n"
+      ]
+    ]
+  },
+  "preload.js": {
+    "sha256": "d6708f1d82463e6a1845b104758ccdab0a90e09020bb6d08debed8f975bd2787",
+    "edits": [
+      [
+        161,
+        161,
+        "\nrequire('electron').contextBridge.exposeInMainWorld('localLibrary', {\n  read: () => require('electron').ipcRenderer.sendSync('localmusic:catalog')\n});\n"
+      ]
+    ]
+  },
+  "ui/defaults.js": {
+    "sha256": "7944617992411c286e87832774ee488f4e4e220c69a71859d735dfce6bac4b89",
+    "edits": [
+      [
+        6,
+        6,
+        "    localmusic: { name: '本地音乐', color: 'pink', kind: 'audio' },\n"
+      ],
+      [
+        715,
+        715,
+        "      if (!home.includes('localmusic')) home.splice(home.indexOf('music') + 1, 0, 'localmusic');\n"
+      ]
+    ]
+  },
+  "ui/app.js": {
+    "sha256": "c58c8e3d016d28fba696cbad573687bb7a2a33cb21fef03b9300ce9d8df979e5",
+    "edits": [
+      [
+        3,
+        4,
+        "  const ICONS = { ...window.CarPlayIcons, localmusic: \"<svg viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"1.8\\\"><circle cx=\\\"12\\\" cy=\\\"12\\\" r=\\\"8\\\"/><circle cx=\\\"12\\\" cy=\\\"12\\\" r=\\\"2\\\"/><path d=\\\"M13 7a5 5 0 0 1 4 4M7 13a5 5 0 0 0 4 4\\\"/></svg>\" };\n"
+      ],
+      [
+        2683,
+        2683,
+        "      <section class=\"screen\" data-screen=\"localmusic\"></section>\n"
+      ],
+      [
+        3131,
+        3132,
+        "    if (id === 'nowplaying') {\n      const local = window.CabPlayLocalMusic;\n      const recent = catalog.APPS[settings.recents?.audio] ? settings.recents.audio : 'music';\n      id = local.current() ? 'localmusic' : radio?.playing ? 'radio' : media?.playing ? 'music' : recent;\n      if (id === 'localmusic') local.openNow();\n    } // „Jetzt läuft“: die laufende Audio-App\n"
+      ],
+      [
+        3150,
+        3150,
+        "    if (id === 'localmusic') window.CabPlayLocalMusic.mount(stage.querySelector('[data-screen=\"localmusic\"]'));\n"
+      ],
+      [
+        6831,
+        6831,
+        "\n  function syncLocalMusicWidget(progressOnly = false) {\n    const local = window.CabPlayLocalMusic.current();\n    if (!local || (progressOnly && screen !== 'dashboard')) return;\n    if (!progressOnly) shell.classList.remove('radio-src');\n    const ratio = local.duration > 0 ? Math.min(1, local.elapsed / local.duration) : 0;\n    for (const widget of stage.querySelectorAll('.w-music')) {\n      const progress = widget.querySelector('[data-bind=\"progress\"]');\n      if (progress) progress.style.width = (Math.round(ratio * 400) / 4) + '%';\n      if (progressOnly) continue;\n      const { track, playing } = local;\n      for (const key of ['title', 'artist']) {\n        const text = widget.querySelector('.wm [data-bind=\"' + key + '\"]');\n        if (text && text.textContent !== (track[key] || '')) text.textContent = track[key] || '';\n      }\n      const art = widget.querySelector('.wm [data-bind=\"art\"]');\n      if (art) {\n        const value = track.cover ? 'url(\"' + (track.cached ? 'cabmusic://art/' : 'local-music-art/') + encodeURIComponent(track.cover) + '\")' : '';\n        if (art.style.backgroundImage !== value) art.style.backgroundImage = value;\n        art.classList.toggle('empty', !track.cover);\n      }\n      const play = widget.querySelector('.controls [data-bind=\"play\"]');\n      if (play && play.dataset.state !== String(playing)) {\n        play.innerHTML = playing ? ICONS.pause : ICONS.play;\n        play.dataset.state = String(playing);\n      }\n    }\n  }\n  window.addEventListener('cabplay-local-media', () => {\n    if (window.CabPlayLocalMusic.current()) syncLocalMusicWidget();\n    else onMedia(media || { available: false }, true);\n  });\n"
+      ],
+      [
+        6851,
+        6851,
+        "    syncLocalMusicWidget();\n"
+      ],
+      [
+        7733,
+        7733,
+        "      syncLocalMusicWidget(true);\n"
+      ],
+      [
+        11904,
+        11904,
+        "    window.CabPlayLocalMusic.stopForRadio(state);\n"
+      ],
+      [
+        11905,
+        11905,
+        "    syncLocalMusicWidget();\n"
+      ],
+      [
+        12921,
+        12921,
+        "      if (d.musicNow && window.CabPlayLocalMusic.current()) return showScreen('nowplaying');\n"
+      ],
+      [
+        12927,
+        12928,
+        "    } else if (d.cmd) {\n      const local = window.CabPlayLocalMusic;\n      if (el.closest('.w-music') && local.current()) local.command(d.cmd);\n      else sendMedia(d.cmd);\n    }\n"
+      ]
+    ]
+  },
+  "ui/index.html": {
+    "sha256": "2b8dfaa477c8e57406e1d716b074bf270a72e856955fe169d2980c603cb0bfe3",
+    "edits": [
+      [
+        5,
+        6,
+        "  <meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self'; img-src 'self' cabmusic: data: cpdata: https://i.ytimg.com https://static-cdn.jtvnw.net https://*.scdn.co https://*.spotifycdn.com; media-src 'self' data: http: https: cabmusic://tracks; connect-src 'self' cpdata://map; style-src 'self' 'unsafe-inline'; script-src 'self'; frame-src 'self' https:\">\n"
+      ],
+      [
+        8,
+        8,
+        "  <link rel=\"stylesheet\" href=\"local-music.css\">\n"
+      ],
+      [
+        89,
+        89,
+        "  <script src=\"local-music-index.js\"></script>\n  <script src=\"local-music.js\"></script>\n"
+      ]
+    ]
+  },
+  "ui/remote.html": {
+    "sha256": "b5b3e51498f14c77280ee3acbbd8e07ed47e2a55af137c8ee648fce349296f1f",
+    "edits": [
+      [
+        14,
+        15,
+        "    img { max-width: 100%; max-height: 100%; border-radius: 14px; background: #111; touch-action: none; user-select: none; -webkit-user-drag: none; }\n"
+      ],
+      [
+        22,
+        22,
+        "    body.display-only { flex-direction: column; }\n    .display-only .bar { display: none; }\n    .display-only .screen { padding: 0; grid-template: minmax(0, 1fr) / minmax(0, 1fr); }\n    .display-only img { border-radius: 0; }\n"
+      ],
+      [
+        24,
+        25,
+        "<body class=\"display-only\">\n  <script>\n    if (new URLSearchParams(location.search).get('toolbar') === '1') {\n      document.body.classList.remove('display-only');\n    }\n  </script>\n"
+      ],
+      [
+        69,
+        70,
+        "        const res = await fetch(q('/frame.jpg') + (window.cabPlayWired ? '&wired=1' : '') + '&after=' + frameId + '&n=' + Date.now(), { cache: 'no-store' });\n"
+      ]
+    ]
+  },
+  "remote.js": {
+    "sha256": "d7c2cde2b4194c84943d7505f503836412a44d08f07f8febe0b482e01ca1ea48",
+    "edits": [
+      [
+        56,
+        57,
+        "  frame(wired = false) {\n    const key = wired ? 'wiredCache' : 'cache';\n    const cache = this[key] || { id: 0 };\n    const started = Date.now();\n"
+      ],
+      [
+        59,
+        60,
+        "    if (image !== cache.image && started - (cache.encodedAt ?? -Infinity) >= (wired ? 16 : 33)) {\n"
+      ],
+      [
+        62,
+        65,
+        "      const limit = wired ? 2560 : 1920;\n      const small = width > limit ? image.resize({ width: limit, quality: 'good' }) : image;\n      this[key] = { image, jpeg: small.toJPEG(wired ? 96 : 90), id: cache.id + 1, encodedAt: started };\n"
+      ],
+      [
+        70,
+        71,
+        "    return this[key];\n"
+      ],
+      [
+        148,
+        148,
+        "      if (url.searchParams.get('wired') === '1') this.lastWired = Date.now();\n"
+      ],
+      [
+        155,
+        156,
+        "        const f = this.frame(url.searchParams.get('wired') === '1');\n"
+      ],
+      [
+        162,
+        163,
+        "        setTimeout(reply, 4);\n"
+      ]
+    ]
+  },
+  "main/game.js": {
+    "sha256": "dae9d2f6f87d40b2828fcc6abad6bf1878d3cb719797f00ef430e5fc0f4373b3",
+    "edits": [
+      [
+        92,
+        92,
+        "  // Recognize the two installed D3DMetal compatibility variants.\n  const protectedPluginHashes = new Set([\"2dc47c0bbbb84cdec0f3f8bf6f8bad6bff523afed52cf688d50d27b6cc524cc0\", \"7e5f446a20966cd382abb74c5758641bc27029c6bcaf41b7a148b3da5e5521ad\"]);\n  function preservePlugin(target) {\n    if (!fs.existsSync(target)) return false;\n    const digest = require('node:crypto').createHash('sha256').update(fs.readFileSync(target)).digest('hex');\n    return protectedPluginHashes.has(digest);\n  }\n\n"
+      ],
+      [
+        96,
+        96,
+        "    if (preservePlugin(target)) return { ...base, state: 'installed', bundled: true };\n"
+      ],
+      [
+        117,
+        117,
+        "    if (preservePlugin(path.join(plugins, PLUGIN))) return;\n"
+      ]
+    ]
+  }
+}
