@@ -1,11 +1,22 @@
 # CabPlay for CrossOver
 
-给 macOS 上的《欧洲卡车模拟 2》装一套 CabPlay 补丁。**Mac 上运行一次安装脚本**，就能装好 D3DMetal 驾驶室中控和 Ultra 仪表、本地音乐和响度均衡，以及 iPad 无线和 USB 副屏所需的 Mac 端服务。
+## 这个项目做什么？
+
+CabPlay 可以把导航、仪表和媒体界面放进《欧洲卡车模拟 2》的驾驶室。本项目为 **macOS + CrossOver + Steam 版欧卡 2** 提供一套配套补丁，解决 D3DMetal 下的双屏兼容问题，并加入本地音乐和 iPad 副屏。Mac 端功能通过同一个安装器配置。
+
+| 功能 | 装好后能做什么 |
+| --- | --- |
+| **驾驶室中控与 Ultra** | 用 D3DMetal 和 DirectX 11 开车时，在驾驶室查看 GPS 中控和 Ultra 数字仪表。补丁针对加载驾驶室时的纹理上传问题。 |
+| **本地音乐** | 把歌放进欧卡 2 的音乐目录，在 CabPlay 里选歌、建播放列表、切歌、调整音量和切换顺序或随机播放。支持内嵌封面、封面取色和「正在播放」联动。 |
+| **自动响度均衡** | 后台分析歌曲并生成播放缓存，让切歌时的听感音量更接近。仍可用音量滑块调节整体音量。 |
+| **iPad 副屏** | 通过无线扫码、手动输入网址或 USB 数据线连接，在 iPad 上查看 CabPlay 并回传触控。无线目标约 30 FPS，USB 约 60 FPS。iPad 端需单独签名安装一次。 |
 
 ## 三步安装
 
-1. **准备游戏和 CabPlay。** 在 CrossOver 的 `Steam` 容器中安装 **欧卡 2 1.62.3.3s** 和官方 **CabPlay 1.22.1**。退出游戏和 CabPlay，外置游戏盘保持连接。Mac 需要 Python 3.9+、Git 和 FFmpeg。使用 Homebrew 的话，运行 `brew install ffmpeg` 即可补齐音乐工具。
-2. **准备兼容插件。** 把官方 **1.22.0** 安装包 `CabPlay-Setup-1.22.0.exe` 放进 Mac 的「下载」文件夹。脚本会从里面提取经过验证的游戏 DLL，桌面端仍用 1.22.1。如果游戏目录已经有兼容 DLL，可以跳过这一步。[官方 CabPlay 发布页](https://github.com/Ku3rb1s/CabPlay/releases)
+**新用户可以直接安装官方 CabPlay 1.22.1。** 1.22.0 安装包在全新安装时只用来提取游戏内兼容 DLL，下载后放着即可。桌面端全程使用 1.22.1。
+
+1. **安装官方 1.22.1。** 在 CrossOver 的 `Steam` 容器中安装 **欧卡 2 1.62.3.3s** 和官方 **CabPlay 1.22.1**。退出游戏和 CabPlay，外置游戏盘保持连接。Mac 需要 Python 3.9+、Git、`ffmpeg` 和 `ffprobe`。已有 Homebrew 的话，运行 `brew install ffmpeg` 即可补齐音乐工具。
+2. **下载兼容 DLL 的来源包。** 把官方 **1.22.0** 安装包 `CabPlay-Setup-1.22.0.exe` 放进 Mac 的「下载」文件夹，保持文件名原样，无需双击运行。如果游戏目录里已经有脚本可识别的兼容 DLL，可以跳过这一步。[官方 CabPlay 发布页](https://github.com/Ku3rb1s/CabPlay/releases)
 3. **复制到 Mac 终端执行。**
 
    ```bash
@@ -17,6 +28,10 @@
 看到「已安装 CabPlay 全功能补丁」后，在 CrossOver 的 Steam 容器选 **D3DMetal**，用 **DirectX 11** 启动欧卡 2。进入驾驶室后，中控和 Ultra 应随车辆移动刷新。
 
 脚本会在写入前校验版本并备份程序、插件和配置。如果想先检查环境，运行 `python3 install.py --check`。如果脚本找不到游戏，在命令末尾加 `--game-dir `，再把游戏安装文件夹拖进终端。如果旧版安装包放在别处，可以用 `--legacy-installer` 指定该文件。
+
+### 手头只有 1.22.1 安装包怎么办？
+
+全新安装且游戏目录里只有 1.22.1 自带的 DLL 时，还需要下载一次 1.22.0 安装包来完成全功能安装。当前 D3DMetal 补丁针对经过验证的 **游戏内插件 1.12.15**，因此安装器会从 1.22.0 安装包提取这个 DLL，再与 1.22.1 桌面端配套使用。可以用 `python3 install.py --check` 先确认你的机器是否已经具备兼容 DLL。
 
 ## 装好后怎么用
 
